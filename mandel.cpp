@@ -11,7 +11,7 @@ using namespace std;
 
 void noob(char*prog){
 		cout << "Usage : "<<prog<<" <output name> <nb frames> <first frame> <nb iterations> <XRES> <YRES>"
-			<<" <width> <zoomfactor> <zoomx> <zoomy> <zoomtype> where a=zoom, b=iteration, c=xtrans, d=ytrans"<<endl;
+			<<" <width> <zoomfactor> <zoomx> <zoomy> <zoomtype> where a=zoom, b=iteration, c=xtrans, d=ytrans, e=tiles"<<endl;
 }
 
 double norme(double x, double y){
@@ -34,14 +34,31 @@ int iterate(int iterations, double x, double y){
 	}
 	return bound;
 }
-bitmap_image generate(int iter,int XRES, int YRES, double XMAX, double XMIN, double YMIN, double YMAX){
-	bitmap_image image(XRES,YRES);
+	int rspeed = 101;
+	int gspeed = 71;
+	int bspeed = 43;
+bitmap_image generate(int iter,int XRES, int YRES, double XMAX, double XMIN, double YMIN, double YMAX,bitmap_image image){
+	if (YMIN-YMAX<0.01)
+	{
+	for(int i=0; i<XRES; i++){
+		for(int j=0; j<YRES/2; j++){
+			int color = iter-iterate(iter,(XMIN + i * (XMAX - XMIN) / XRES),(YMIN + j * (YMAX - YMIN) / YRES));
+			//image.set_pixel(XRES-i-1,j,color/100*10+20,color/10%10*10+20,color%10*20+30);
+			image.set_pixel(XRES-i-1,j,2*(int)((double)(color%rspeed*(rspeed-color%rspeed))/(rspeed*rspeed)*255),2*(int)((double)(color%gspeed*(gspeed-color%gspeed))/(gspeed*gspeed)*255),2*(int)((double)(color%bspeed*(bspeed-color%bspeed))/(bspeed*bspeed)*255));
+			image.set_pixel(XRES-i-1,YRES-j-1,2*(int)((double)(color%rspeed*(rspeed-color%rspeed))/(rspeed*rspeed)*255),2*(int)((double)(color%gspeed*(gspeed-color%gspeed))/(gspeed*gspeed)*255),2*(int)((double)(color%bspeed*(bspeed-color%bspeed))/(bspeed*bspeed)*255));		
+		}
+		cout << i<<"caca" << endl;
+	}
+	}else{
 	for(int i=0; i<XRES; i++){
 		for(int j=0; j<YRES; j++){
-			int color = iter - iterate(iter,(XMIN + i * (XMAX - XMIN) / XRES),(YMIN + j * (YMAX - YMIN) / YRES));
+			int color = iter-iterate(iter,(XMIN + i * (XMAX - XMIN) / XRES),(YMIN + j * (YMAX - YMIN) / YRES));
 			//image.set_pixel(XRES-i-1,j,color/100*10+20,color/10%10*10+20,color%10*20+30);
-			image.set_pixel(XRES-i-1,j,color/100*25,color/10%10*25,color%10*25);
+			image.set_pixel(XRES-i-1,j,2*(int)((double)(color%rspeed*(rspeed-color%rspeed))/(rspeed*rspeed)*255),2*(int)((double)(color%gspeed*(gspeed-color%gspeed))/(gspeed*gspeed)*255),2*(int)((double)(color%bspeed*(bspeed-color%bspeed))/(bspeed*bspeed)*255));
+			
 		}
+		cout << i << endl;
+	}
 	}
 	return image;
 }
@@ -63,15 +80,13 @@ int main(int argc,char**argv){
 	double zoomx = stold(argv[9]);
 	double zoomy = stold(argv[10]);
 	string zoomtype = string(argv[11]);
-	//const double XMIN = -2.1;
-	//const double XMAX = 0.7;
-	//const double YMIN = -1.4;
-	//const double YMAX = 1.4;
 	double XMIN ;
 	double XMAX ;
 	double YMIN ;
 	double YMAX ;
 	ostringstream number;
+	bitmap_image image(XRES,YRES);
+
 	if(beginframe!=0){
 		widthx = widthx/pow(zoomfactor,beginframe);
 		widthy = widthy/pow(zoomfactor,beginframe);
@@ -86,7 +101,7 @@ int main(int argc,char**argv){
 			YMAX = zoomy+widthy;
 			number.str("");
 			number << i ;
-			generate(iter,XRES,YRES,XMIN,XMAX,YMIN,YMAX).save_image(name+number.str() +".bmp");
+			generate(iter,XRES,YRES,XMIN,XMAX,YMIN,YMAX,image).save_image(name+number.str() +".bmp");
 			widthx /= zoomfactor;
 			widthy /= zoomfactor;
 		}
@@ -101,11 +116,26 @@ int main(int argc,char**argv){
 		{
 			number.str("");
 			number << i ;
-			generate(iter,XRES,YRES,XMIN,XMAX,YMIN,YMAX).save_image(name+number.str() +".bmp");
+			generate(iter,XRES,YRES,XMIN,XMAX,YMIN,YMAX,image).save_image(name+number.str() +".bmp");
 			iter++;
 		}
 	}
-
+	if (zoomtype=="e")
+	{
+		double widthx = stold(argv[7]);
+		double widthy = widthx;
+		YRES = XRES*(2*numFrames-1);
+		YMIN = zoomy-widthy;
+		YMAX = zoomy+widthy;
+		for (int i = -numFrames+1+beginframe; i < numFrames; ++i)
+		{
+			XMIN = zoomx+2*i*widthx/(2*numFrames-1)-widthx/(2*numFrames-1);
+			XMAX = zoomx+2*i*widthx/(2*numFrames-1)+widthx/(2*numFrames-1);
+			number.str("");
+			number << (i+numFrames-1);
+			generate(iter,XRES,YRES,XMIN,XMAX,YMIN,YMAX,image).save_image(name+number.str()+".bmp");
+		}
+	}
 	// widthy = widthy /pow(1.2,42);
 	// widthx = widthx /pow(1.2,42);
 	// XMIN = zoomx-widthx;
