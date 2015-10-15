@@ -38,7 +38,7 @@ int iterate(int iterations, double x, double y){
 	int gspeed = 71;
 	int bspeed = 43;
 bitmap_image generate(int iter,int XRES, int YRES, double XMAX, double XMIN, double YMIN, double YMAX,bitmap_image image){
-	if (YMIN-YMAX<0.01)
+	if (YMIN+YMAX==0)
 	{
 	for(int i=0; i<XRES; i++){
 		for(int j=0; j<YRES/2; j++){
