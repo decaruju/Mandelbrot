@@ -38,9 +38,9 @@ int iterate(int iterations, double x, double y,int puissance){
 	}
 	return bound;
 }
-	int rspeed = 101;
-	int gspeed = 71;
-	int bspeed = 43;
+	int rspeed = 499;
+	int gspeed = 101;
+	int bspeed = 23;
 bitmap_image generate(int iter,int XRES, int YRES, double XMAX, double XMIN, double YMIN, double YMAX,bitmap_image image,int puissance){
 	if (YMIN+YMAX==0)
 	{
@@ -66,6 +66,37 @@ bitmap_image generate(int iter,int XRES, int YRES, double XMAX, double XMIN, dou
 	}
 	return image;
 }
+int iteratej(int iterations, double x, double y,int puissance,double x0,double y0){
+	int bound = 0;
+	while(norme(x,y)<=4&&bound<iterations){
+		bound++;
+		double tempx=x;
+		double tempy=y;
+		double x1;
+		for (int i = 1; i < puissance; ++i)
+		{
+			x1 = x;
+			x = x*tempx-y*tempy;
+			y = y*tempx+x1*tempy;	
+		}
+		x=x+x0;
+		y=y+y0;
+	}
+	return bound;
+}
+bitmap_image generatej(int iter,int XRES, int YRES, double XMAX, double XMIN, double YMIN, double YMAX,bitmap_image image,int puissance,double x,double y){
+	for(int i=0; i<XRES; i++){
+		for(int j=0; j<YRES; j++){
+			int color = iter-iteratej(iter,(XMIN + i * (XMAX - XMIN) / XRES),(YMIN + j * (YMAX - YMIN) / YRES),puissance,x,y);
+			//image.set_pixel(XRES-i-1,j,color/100*10+20,color/10%10*10+20,color%10*20+30);
+			image.set_pixel(XRES-i-1,j,2*(int)((double)(color%rspeed*(rspeed-color%rspeed))/(rspeed*rspeed)*255),2*(int)((double)(color%gspeed*(gspeed-color%gspeed))/(gspeed*gspeed)*255),2*(int)((double)(color%bspeed*(bspeed-color%bspeed))/(bspeed*bspeed)*255));
+			
+		}
+		cout << i << endl;
+	}
+	return image;
+}
+
 int parse_digit(char digit) {
     return digit - '0';
 }
@@ -161,6 +192,20 @@ int main(int argc,char**argv){
 			number.str("");
 			number << (i+numFrames-1);
 			generate(iter,XRES,YRES,XMIN,XMAX,YMIN,YMAX,image,puissance).save_image(name+number.str()+".bmp");
+		}
+	}
+	if (zoomtype=="j"){
+		for (int i = beginframe; i < numFrames+beginframe; i++)
+		{
+			XMIN = 0-widthx;
+			XMAX = 0+widthx;
+			YMIN = 0-widthy;
+			YMAX = 0+widthy;
+			number.str("");
+			number << i ;
+			generatej(iter,XRES,YRES,XMIN,XMAX,YMIN,YMAX,image,puissance,zoomx,zoomy).save_image(name+number.str() +".bmp");
+			widthx /= zoomfactor;
+			widthy /= zoomfactor;
 		}
 	}
 	return 0;
