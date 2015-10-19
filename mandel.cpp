@@ -50,7 +50,7 @@ bitmap_image generate(int iter,int XRES, int YRES, double XMAX, double XMIN, dou
 	{
 	for(int i=0; i<XRES; i++){
 		for(int j=0; j<YRES/2; j++){
-			int color = iter-iterate(iter,(XMIN + i * (XMAX - XMIN) / XRES),(YMIN + j * (YMAX - YMIN) / YRES),puissance);
+			int color = iterate(iter,(XMIN + i * (XMAX - XMIN) / XRES),(YMIN + j * (YMAX - YMIN) / YRES),puissance);
 			//image.set_pixel(XRES-i-1,j,color/100*10+20,color/10%10*10+20,color%10*20+30);
 			image.set_pixel(XRES-i-1,j,2*(int)((double)(color%RSPEED*(RSPEED-color%RSPEED))/(RSPEED*RSPEED)*255),2*(int)((double)(color%GSPEED*(GSPEED-color%GSPEED))/(GSPEED*GSPEED)*255),2*(int)((double)(color%BSPEED*(BSPEED-color%BSPEED))/(BSPEED*BSPEED)*255));
 			image.set_pixel(XRES-i-1,YRES-j-1,2*(int)((double)(color%RSPEED*(RSPEED-color%RSPEED))/(RSPEED*RSPEED)*255),2*(int)((double)(color%GSPEED*(GSPEED-color%GSPEED))/(GSPEED*GSPEED)*255),2*(int)((double)(color%BSPEED*(BSPEED-color%BSPEED))/(BSPEED*BSPEED)*255));
