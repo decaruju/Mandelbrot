@@ -39,6 +39,9 @@ int iterate(int iterations, double x, double y,int puissance){
 		x=x+x0;
 		y=y+y0;
 	}
+	if (bound==iterations-1){
+		return 0;
+	}
 	return bound;
 }
 
@@ -56,7 +59,7 @@ bitmap_image generate(int iter,int XRES, int YRES, double XMAX, double XMIN, dou
 	}else{
 	for(int i=0; i<XRES; i++){
 		for(int j=0; j<YRES; j++){
-			int color = iter-iterate(iter,(XMIN + i * (XMAX - XMIN) / XRES),(YMIN + j * (YMAX - YMIN) / YRES),puissance);
+			int color = iterate(iter,(XMIN + i * (XMAX - XMIN) / XRES),(YMIN + j * (YMAX - YMIN) / YRES),puissance);
 			//image.set_pixel(XRES-i-1,j,color/100*10+20,color/10%10*10+20,color%10*20+30);
 			image.set_pixel(XRES-i-1,j,2*(int)((double)(color%RSPEED*(RSPEED-color%RSPEED))/(RSPEED*RSPEED)*255),2*(int)((double)(color%GSPEED*(GSPEED-color%GSPEED))/(GSPEED*GSPEED)*255),2*(int)((double)(color%BSPEED*(BSPEED-color%BSPEED))/(BSPEED*BSPEED)*255));
 
@@ -82,13 +85,16 @@ int iteratej(int iterations, double x, double y,int puissance,double x0,double y
 		x=x+x0;
 		y=y+y0;
 	}
+	if (bound==iterations-1){
+		return 0;
+	}
 	return bound;
 }
 
 bitmap_image generatej(int iter,int XRES, int YRES, double XMAX, double XMIN, double YMIN, double YMAX,bitmap_image image,int puissance,double x,double y){
 	for(int i=0; i<XRES; i++){
 		for(int j=0; j<YRES; j++){
-			int color = iter-iteratej(iter,(XMIN + i * (XMAX - XMIN) / XRES),(YMIN + j * (YMAX - YMIN) / YRES),puissance,x,y);
+			int color = iteratej(iter,(XMIN + i * (XMAX - XMIN) / XRES),(YMIN + j * (YMAX - YMIN) / YRES),puissance,x,y);
 			//image.set_pixel(XRES-i-1,j,color/100*10+20,color/10%10*10+20,color%10*20+30);
 			image.set_pixel(XRES-i-1,j,2*(int)((double)(color%RSPEED*(RSPEED-color%RSPEED))/(RSPEED*RSPEED)*255),2*(int)((double)(color%GSPEED*(GSPEED-color%GSPEED))/(GSPEED*GSPEED)*255),2*(int)((double)(color%BSPEED*(BSPEED-color%BSPEED))/(BSPEED*BSPEED)*255));
 
