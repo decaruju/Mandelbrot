@@ -39,8 +39,9 @@ int iterate(int iterations, double x, double y,int puissance){
 		x=x+x0;
 		y=y+y0;
 	}
-	if (bound==iterations-1){
+	if (bound>=iterations){
 		return 0;
+		cout<<"caca"<<endl;
 	}
 	return bound;
 }
