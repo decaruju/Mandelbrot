@@ -45,7 +45,13 @@ int iterate(int iterations, double x, double y,int puissance){
 	}
 	return bound;
 }
-
+string zeropadding(string name,int numberof0){
+	for (int i = 0; i < numberof0-name.length(); ++i)
+	{
+		name="0"+name;	
+	}
+	return name;
+}
 bitmap_image generate(int iter,int XRES, int YRES, double XMAX, double XMIN, double YMIN, double YMAX,bitmap_image image,int puissance){
 	if (YMIN+YMAX==0)
 	{
@@ -164,7 +170,7 @@ int mandel(int argc,char**argv){
 				YMAX = zoomy+widthy;
 				number.str("");
 				number << i ;
-				generate(iter,XRES,YRES,XMIN,XMAX,YMIN,YMAX,image,puissance).save_image(name+number.str() +".bmp");
+				generate(iter,XRES,YRES,XMIN,XMAX,YMIN,YMAX,image,puissance).save_image(name+zeropadding(number.str(),10) +".bmp");
 				widthx /= zoomfactor;
 				widthy /= zoomfactor;
 			}
