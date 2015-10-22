@@ -3,33 +3,34 @@
 #include <sstream>
 #include <fstream>
 #include <string>
-// #include <boost/multiprecision/gmp.hpp>
+#include <boost/multiprecision/gmp.hpp>
 #include "bitmap_image.hpp"
 
+
 using namespace std;
-//using boost::multiprecision::double;
+// using boost::multiprecision::long double;
+// using boost::multiprecision::number;
 const int RSPEED = 499;
 const int GSPEED = 101;
 const int BSPEED = 23;
-
 void usage(char*prog){
 		cout << "Usage : "<<prog<<" <output name> <nb frames> <first frame> <nb iterations> <XRES> <YRES>"
 			<<" <width> <zoomfactor> <zoomx> <zoomy> <zoomtype> <power>where a=zoom, b=iteration, c=xtrans, d=ytrans, e=tiles"<<endl;
 }
 
-double norme(double x, double y){
+long double norme(long double x, long double y){
 	return (x*x+y*y);
 }
 
-int iterate(int iterations, double x, double y,int puissance){
+int iterate(int iterations, long double x, long double y,int puissance){
 	int bound = 0;
-	double x0 = x;
-	double y0 = y;
+	long double x0 = x;
+	long double y0 = y;
 	while(norme(x,y)<=4&&bound<iterations){
 		bound++;
-		double tempx=x;
-		double tempy=y;
-		double x1;
+		long double tempx=x;
+		long double tempy=y;
+		long double x1;
 		for (int i = 1; i < puissance; ++i)
 		{
 			x1 = x;
@@ -45,14 +46,7 @@ int iterate(int iterations, double x, double y,int puissance){
 	}
 	return bound;
 }
-string zeropadding(string name,int numberof0){
-	for (int i = 0; i < numberof0-name.length(); ++i)
-	{
-		name="0"+name;	
-	}
-	return name;
-}
-bitmap_image generate(int iter,int XRES, int YRES, double XMAX, double XMIN, double YMIN, double YMAX,bitmap_image image,int puissance){
+bitmap_image generate(int iter,int XRES, int YRES, long double XMAX, long double XMIN, long double YMIN, long double YMAX,bitmap_image image,int puissance){
 	if (YMIN+YMAX==0)
 	{
 	for(int i=0; i<XRES; i++){
@@ -76,13 +70,13 @@ bitmap_image generate(int iter,int XRES, int YRES, double XMAX, double XMIN, dou
 	return image;
 }
 
-int iteratej(int iterations, double x, double y,int puissance,double x0,double y0){
+int iteratej(int iterations, long double x, long double y,int puissance,long double x0,long double y0){
 	int bound = 0;
 	while(norme(x,y)<=4&&bound<iterations){
 		bound++;
-		double tempx=x;
-		double tempy=y;
-		double x1;
+		long double tempx=x;
+		long double tempy=y;
+		long double x1;
 		for (int i = 1; i < puissance; ++i)
 		{
 			x1 = x;
@@ -98,7 +92,7 @@ int iteratej(int iterations, double x, double y,int puissance,double x0,double y
 	return bound;
 }
 
-bitmap_image generatej(int iter,int XRES, int YRES, double XMAX, double XMIN, double YMIN, double YMAX,bitmap_image image,int puissance,double x,double y){
+bitmap_image generatej(int iter,int XRES, int YRES, long double XMAX, long double XMIN, long double YMIN, long double YMAX,bitmap_image image,int puissance,long double x,long double y){
 	for(int i=0; i<XRES; i++){
 		for(int j=0; j<YRES; j++){
 			int color = iteratej(iter,(XMIN + i * (XMAX - XMIN) / XRES),(YMIN + j * (YMAX - YMIN) / YRES),puissance,x,y);
@@ -125,11 +119,11 @@ int mandel(int argc,char**argv){
 		int iter = stoi(argv[4]);
 	  int XRES = stoi(argv[5]);
 	  int YRES = stoi(argv[6]);
-		double widthx = stold(argv[7]);
-		double widthy = widthx/XRES*YRES;
-		double zoomfactor = stold(argv[8]);
-		double zoomx = stold(argv[9]);
-		double zoomy = stold(argv[10]);
+		long double widthx = stold(argv[7]);
+		long double widthy = widthx/XRES*YRES;
+		long double zoomfactor = stold(argv[8]);
+		long double zoomx = stold(argv[9]);
+		long double zoomy = stold(argv[10]);
 		char zoomtype = argv[11][0];
 		int puissance = stoi(argv[12]);
 
@@ -143,16 +137,16 @@ int mandel(int argc,char**argv){
 	// 	cout<<"Entrez la résolution horizontale."<<endl;
 	// 	cout<<"Entrez la résolution verticale."<<endl;
 	// 	cout<<"Entrez la demi largeur."<<endl;
-	// 	double widthy = widthx/XRES*YRES;
+	// 	long double widthy = widthx/XRES*YRES;
 	// 	cout<<"Entrez la coordonnée en X du point de zoom"<<endl;
 	// 	cout<<"Entrez la coordonnée en Y du point de zoom"<<endl;
 	// 	cout<<"Entrez le type de zoom."<<endl;
 
 	// }
-	double XMIN ;
-	double XMAX ;
-	double YMIN ;
-	double YMAX ;
+	long double XMIN ;
+	long double XMAX ;
+	long double YMIN ;
+	long double YMAX ;
 	ostringstream number;
 	bitmap_image image(XRES,YRES);
 
@@ -170,7 +164,7 @@ int mandel(int argc,char**argv){
 				YMAX = zoomy+widthy;
 				number.str("");
 				number << i ;
-				generate(iter,XRES,YRES,XMIN,XMAX,YMIN,YMAX,image,puissance).save_image(name+zeropadding(number.str(),10) +".bmp");
+				generate(iter,XRES,YRES,XMIN,XMAX,YMIN,YMAX,image,puissance).save_image(name+number.str()+".bmp");
 				widthx /= zoomfactor;
 				widthy /= zoomfactor;
 			}
