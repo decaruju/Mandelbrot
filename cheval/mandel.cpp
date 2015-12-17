@@ -74,13 +74,6 @@ int main(int argc,char**argv){
 
 
 		  //string name = string(argv[1]);
-
-
-
-
-
-
-
 		  //char zoomtype = argv[11][0];
 		  //int puissance = stoi(argv[12]);
 		  //double XMIN ;
