@@ -1,18 +1,13 @@
 #include <math.h>
 #include <iostream>
 #include <sstream>
-#include <fstream>
-#include <string>
 #include <boost/multiprecision/gmp.hpp>
 #include "bitmap_image.hpp"
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
-#include <FL/Fl_Box.H>
 #include <FL/Fl_Button.H>
-#include <FL/Fl_Slider.H>
 #include <FL/Fl_Output.H>
-#include <FL/Fl_Input.H>
-#include "generate.cpp"
+#include "generate.hpp"
 
 using boost::multiprecision::mpf_float_100;
 using namespace std;

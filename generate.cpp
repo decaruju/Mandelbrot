@@ -1,8 +1,3 @@
-#include <math.h>
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <string>
 #include <boost/multiprecision/gmp.hpp>
 #include "bitmap_image.hpp"
 
